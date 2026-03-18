@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond } from "next/font/google";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
+import GlobalMusicProvider from "@/components/GlobalMusicProvider";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -23,12 +24,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cormorantGaramond.variable}>
-      <body className="antialiased font-sans bg-zinc-950 text-white">
+    <html lang="en" className={cormorantGaramond.variable} suppressHydrationWarning>
+      <body className="antialiased font-sans bg-zinc-950 text-white" suppressHydrationWarning>
         <CustomCursor />
         <SmoothScroll>
           {children}
         </SmoothScroll>
+        <GlobalMusicProvider />
         <Toaster
           position="bottom-right"
           toastOptions={{

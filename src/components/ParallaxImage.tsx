@@ -31,7 +31,7 @@ export default function ParallaxImage({
   );
 
   return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
+    <div ref={ref} className={`overflow-hidden bg-black ${className}`}>
       <motion.img
         src={src}
         alt={alt}

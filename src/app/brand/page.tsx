@@ -68,7 +68,7 @@ export default function BrandPage() {
             style={{ height: "75vh", minHeight: "480px" }}
           >
             <ParallaxImage
-              src="/brand/brand.png"
+              src="/brand/Ferons.jpg"
               alt="Feron Brand Embossed"
               className="w-full h-full"
               intensity={10}
@@ -156,115 +156,133 @@ export default function BrandPage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 3 · SUSTAINABLE STYLE — Heading + Texts + 2 Images
+          SECTION 3 · SUSTAINABLE STYLE — 3 Column Layout (Premium)
       ═══════════════════════════════════════════════════════════════ */}
       <section
         className="bg-[#F4F4F5]"
         style={{ padding: "140px 64px" }}
       >
-        {/* Row 1: Heading left, body text right */}
-        <div className="flex flex-col lg:flex-row gap-16 items-start" style={{ marginBottom: "80px" }}>
-          {/* Heading — sol üst, max genişlik */}
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            variants={slideUp(0)}
-            viewport={{ once: true, margin: "-100px" }}
-            className="font-black tracking-tight text-black lg:flex-[3]"
-            style={{
-              fontSize: "clamp(2.5rem, 5vw, 4rem)",
-              lineHeight: 1.1,
-              maxWidth: "48rem",
-            }}
-          >
-            Sustainable Style: We Source Only the Finest Organic Cotton and Wool.
-          </motion.h2>
-
-          {/* Body text — sağ sütun */}
+        {/* 3-Column: Text Left | Images Right (properly aligned) */}
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-8">
+          
+          {/* LEFT COLUMN — Text Content (Premium Typography) */}
           <motion.div
-            className="lg:flex-[2] flex flex-col gap-6"
+            className="lg:flex-[2.5] flex flex-col gap-10 lg:pr-20 lg:pt-0"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
-            <motion.p
-              variants={slideUp(0.15)}
-              className="text-zinc-500"
-              style={{ fontSize: "16px", lineHeight: "1.8" }}
-            >
-              At Feron, we believe fashion and nature go hand-in-hand.
-              That&apos;s why we source only organic cotton and premium
-              materials, reducing our environmental footprint while
-              delivering unmatched quality.
-            </motion.p>
-            <motion.p
-              variants={slideUp(0.25)}
-              className="text-zinc-500"
-              style={{ fontSize: "16px", lineHeight: "1.8" }}
-            >
-              From seed to stitch, we&apos;re minimizing our ecological
-              footprint with 100% organic materials. Every garment is woven
-              with integrity, dyed with care, and finished to perfection.
-            </motion.p>
-          </motion.div>
-        </div>
-
-        {/* Row 2: Two images with parallax — büyük sol, küçük sağ */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Large Image */}
-          <motion.div
-            className="lg:flex-[3] relative overflow-hidden group"
-            initial="hidden"
-            whileInView="visible"
-            variants={clipReveal(0)}
-            viewport={{ once: true, margin: "-80px" }}
-            style={{ height: "70vh", minHeight: "500px" }}
-          >
-            <ParallaxImage
-              src="/brand/brand-5.png"
-              alt="Feron — Sourced from Nature"
-              className="w-full h-full"
-              intensity={12}
-            />
-            <div
-              className="absolute left-6 bottom-6 z-10 bg-white/90 backdrop-blur-sm text-black uppercase select-none"
+            {/* Heading */}
+            <motion.h2
+              variants={slideUp(0)}
+              className="font-bold tracking-tight text-black"
               style={{
-                fontSize: "10px",
-                fontWeight: 600,
-                letterSpacing: "0.12em",
-                padding: "8px 16px",
+                fontSize: "clamp(2.2rem, 4.5vw, 3.5rem)",
+                lineHeight: 1.2,
+                letterSpacing: "-0.025em",
+                fontWeight: 700,
               }}
             >
-              (Sourced from Ireland)
-            </div>
+              Sustainable Style: We Source Only the Finest Organic Cotton and Wool.
+            </motion.h2>
+
+            {/* Body Paragraphs */}
+            <motion.div className="flex flex-col gap-6">
+              <motion.p
+                variants={slideUp(0.15)}
+                className="text-zinc-700"
+                style={{ 
+                  fontSize: "16px", 
+                  lineHeight: "1.8",
+                  fontWeight: 400,
+                }}
+              >
+                At Feron, we believe fashion and nature go hand-in-hand.
+                That&apos;s why we source only organic cotton and premium
+                materials, reducing our environmental footprint while
+                delivering unmatched quality.
+              </motion.p>
+              <motion.p
+                variants={slideUp(0.25)}
+                className="text-zinc-700"
+                style={{ 
+                  fontSize: "16px", 
+                  lineHeight: "1.8",
+                  fontWeight: 400,
+                }}
+              >
+                From seed to stitch, we&apos;re minimizing our ecological
+                footprint with 100% organic materials. Every garment is woven
+                with integrity, dyed with care, and finished to perfection.
+              </motion.p>
+            </motion.div>
           </motion.div>
 
-          {/* Smaller Detail Image */}
-          <motion.div
-            className="lg:flex-[2] relative overflow-hidden group"
-            initial="hidden"
-            whileInView="visible"
-            variants={clipReveal(0.2)}
-            viewport={{ once: true, margin: "-80px" }}
-            style={{ height: "70vh", minHeight: "500px" }}
-          >
-            <ParallaxImage
-              src="/brand/brand-3.png"
-              alt="Feron Tags — Pima Cotton"
-              className="w-full h-full"
-              intensity={12}
-            />
-            <div
-              className="absolute right-6 bottom-6 z-10 text-white uppercase drop-shadow-lg select-none"
-              style={{
-                fontSize: "10px",
-                fontWeight: 600,
-                letterSpacing: "0.12em",
-              }}
+          {/* RIGHT SIDE — Images Container (Top Aligned) */}
+          <div className="lg:flex-[5] flex flex-col md:flex-row gap-6 items-start">
+            
+            {/* Large Forest Path Image (TALLER) */}
+            <motion.div
+              className="flex-[3] flex flex-col"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
             >
-              (Pima Cotton)
-            </div>
-          </motion.div>
+              <motion.div
+                className="relative overflow-hidden group"
+                variants={clipReveal(0.1)}
+                style={{ height: "75vh", minHeight: "580px" }}
+              >
+                <ParallaxImage
+                  src="/brand/hanna-lazar-8Dmz8m2Had8-unsplash.jpg"
+                  alt="Feron — Sourced from Nature"
+                  className="w-full h-full"
+                  intensity={12}
+                />
+              </motion.div>
+              <div
+                className="mt-4 text-black uppercase select-none"
+                style={{
+                  fontSize: "9px",
+                  fontWeight: 600,
+                  letterSpacing: "0.15em",
+                }}
+              >
+                (Sourced from Ireland)
+              </div>
+            </motion.div>
+
+            {/* Pima Cotton Detail (SHORTER, SQUARE-ISH) */}
+            <motion.div
+              className="flex-[2] flex flex-col"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+            >
+              <motion.div
+                className="relative overflow-hidden group"
+                variants={clipReveal(0.2)}
+                style={{ height: "48vh", minHeight: "360px", maxHeight: "420px" }}
+              >
+                <ParallaxImage
+                  src="/brand/susan-wilkinson-FUun2TJyp_Q-unsplash.jpg"
+                  alt="Feron — Pima Cotton"
+                  className="w-full h-full"
+                  intensity={12}
+                />
+              </motion.div>
+              <div
+                className="mt-4 text-right text-black uppercase select-none"
+                style={{
+                  fontSize: "9px",
+                  fontWeight: 600,
+                  letterSpacing: "0.15em",
+                }}
+              >
+                (Pima Cotton)
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -277,12 +295,12 @@ export default function BrandPage() {
       >
         {/* Parallax Background via ParallaxImage */}
         <ParallaxImage
-          src="/brand/brand-4.png"
-          alt="Feron Pattern Cape"
+          src="/brand/Ourbrand1.jpg"
+          alt="Feron Brand Premium"
           className="absolute inset-0 w-full h-full z-0"
           intensity={8}
         />
-        <div className="absolute inset-0 bg-black/25 z-[1]" />
+        <div className="absolute inset-0 bg-black/35 z-[1]" />
 
         <div className="relative z-10 flex items-center justify-center h-full">
           <motion.h2
@@ -294,11 +312,13 @@ export default function BrandPage() {
               transition: { duration: 1.3, delay: 0.15, ease: EASE },
             }}
             viewport={{ once: true, margin: "-80px" }}
-            className="text-center font-black tracking-tighter text-white"
+            className="text-center font-bold tracking-tight text-white"
             style={{
-              fontSize: "clamp(3.5rem, 10vw, 10rem)",
-              lineHeight: 0.9,
-              textShadow: "0 8px 50px rgba(0,0,0,0.4)",
+              fontSize: "clamp(3rem, 8vw, 7rem)",
+              lineHeight: 1.1,
+              textShadow: "0 4px 30px rgba(0,0,0,0.5)",
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
             }}
           >
             Trust Quality,

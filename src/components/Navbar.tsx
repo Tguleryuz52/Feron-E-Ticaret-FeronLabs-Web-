@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/shop", label: "Shop" },
+  { href: "/feronlabs", label: "FeronLabs" },
   { href: "/brand", label: "Brand" },
   { href: "/journal", label: "Journal" },
   { href: "/contact", label: "Contact" },

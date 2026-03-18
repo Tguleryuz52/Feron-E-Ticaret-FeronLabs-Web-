@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 /* ─── NAV DATA ──────────────────────────────────────── */
 const navLinks = [
   { text: "Shop", href: "/shop" },
+  { text: "FeronLabs", href: "/feronlabs" },
   { text: "New Arrivals", href: "/new-arrivals" },
   { text: "Brand", href: "/brand" },
   { text: "Journal", href: "/journal" },
@@ -21,16 +22,20 @@ const OFF_WHITE = "#F5F5F7";
 const containerVariants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.3 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.25 },
   },
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] as const },
+    filter: "blur(0px)",
+    transition: {
+      duration: 1.0,
+      ease: [0.16, 1, 0.3, 1] as const,
+    },
   },
 };
 

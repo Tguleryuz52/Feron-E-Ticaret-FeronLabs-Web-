@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
 import { useEffect } from "react";
@@ -38,33 +38,6 @@ const fadeIn = {
   }),
 };
 
-/* ─── PARALLAX PRODUCT IMAGE ─── */
-function ParallaxProductImage({ src, alt }: { src: string; alt: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
-
-  return (
-    <div ref={ref} className="w-full h-full overflow-hidden">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <motion.img
-        src={src}
-        alt={alt}
-        className="w-full h-full object-contain"
-        style={{
-          y,
-          scale: 1.12,
-        }}
-      />
-    </div>
-  );
-}
-
 /* ─── PRODUCT CARD COMPONENT ─── */
 function ProductCard({ product }: { product: Product }) {
   const [hovered, setHovered] = useState(false);
@@ -90,61 +63,73 @@ function ProductCard({ product }: { product: Product }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Image Card — tall, generous padding, parallax inside */}
-      <div className="relative aspect-[3/4.2] overflow-hidden bg-[#EEEEEE]">
-        {/* NEW badge */}
+      {/* Image Container */}
+      <div className="relative aspect-3/4 overflow-hidden bg-[#F5F5F5] rounded-xl">
+        {/* NEW badge — clean pill button */}
         {product.is_featured && (
           <span
-            className="absolute top-5 left-5 z-10 bg-white text-black uppercase font-bold select-none"
-            style={{ fontSize: "10px", letterSpacing: "0.06em", padding: "5px 12px" }}
+            className="absolute top-4 left-4 z-10 inline-flex items-center justify-center select-none"
+            style={{
+              backgroundColor: "#000",
+              color: "#fff",
+              fontSize: "9px",
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              padding: "6px 14px",
+              borderRadius: "6px",
+              lineHeight: 1,
+              whiteSpace: "nowrap",
+            }}
           >
             NEW
           </span>
         )}
 
-        {/* Product Image — with parallax scroll effect */}
+        {/* Product Image */}
         {product.images?.[0] && (
-          <div className="absolute inset-0 p-14">
-            <ParallaxProductImage
-              src={product.images[0]}
-              alt={product.name}
-            />
-          </div>
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.images[0]}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
         )}
 
-        {/* ── Quick Add — compact premium bar, slides from right ── */}
+        {/* Quick Add Button — slides from right at bottom-right */}
         <AnimatePresence>
           {hovered && (
             <motion.div
-              initial={{ opacity: 0, x: 24 }}
+              initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 24 }}
-              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute bottom-5 right-5 z-20"
+              exit={{ opacity: 0, x: 30 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute bottom-4 right-4 z-20"
             >
               <button
                 onClick={handleQuickAdd}
-                className="flex items-center gap-5
-                           bg-[#1a1a1a] text-white cursor-pointer
-                           hover:bg-[#2a2a2a] active:bg-[#111]
-                           transition-colors duration-200 select-none"
+                className="flex items-center gap-3
+                           bg-black text-white cursor-pointer
+                           hover:bg-zinc-800 active:bg-zinc-900
+                           transition-colors duration-200 select-none shadow-lg"
                 style={{
-                  padding: "10px 16px",
+                  padding: "10px 18px",
+                  borderRadius: "8px",
                 }}
               >
                 <span
                   style={{
-                    fontSize: "10.5px",
-                    fontWeight: 600,
+                    fontSize: "10px",
+                    fontWeight: 700,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
                   }}
                 >
-                  Quick Add
+                  Sepete Ekle
                 </span>
                 <span
                   style={{
-                    fontSize: "16px",
+                    fontSize: "15px",
                     fontWeight: 300,
                     lineHeight: 1,
                   }}
@@ -157,30 +142,17 @@ function ProductCard({ product }: { product: Product }) {
         </AnimatePresence>
       </div>
 
-      {/* Product Info — Name + Price, same line, thin & minimal */}
-      <div
-        className="flex items-baseline justify-between"
-        style={{ marginTop: "18px", padding: "0 2px" }}
-      >
-        <span
-          className="uppercase text-black"
-          style={{
-            fontSize: "11px",
-            fontWeight: 500,
-            letterSpacing: "0.04em",
-          }}
+      {/* Product Info */}
+      <div className="mt-4 px-1">
+        <h3
+          className="text-[13px] font-medium text-black truncate"
+          style={{ letterSpacing: "-0.01em" }}
         >
           {product.name}
-        </span>
-        <span
-          className="text-black"
-          style={{
-            fontSize: "11px",
-            fontWeight: 400,
-          }}
-        >
+        </h3>
+        <p className="text-[13px] text-zinc-500 mt-1 font-normal">
           ${product.price.toFixed(2)}
-        </span>
+        </p>
       </div>
     </Link>
   );
@@ -203,7 +175,18 @@ export default function ShopSection() {
         `);
       
       if (data) {
-        setProducts(data as unknown as Product[]);
+        /* Remap image paths: old /products/file.png → /products/Ust/ or /products/Alt/ */
+        const ALT_FILES = new Set(["pant.png", "pants2.png", "pants3.png"]);
+        const remapped = (data as unknown as Product[]).map((p) => ({
+          ...p,
+          images: p.images?.map((img) => {
+            if (img.includes("/Ust/") || img.includes("/Alt/")) return img;
+            const filename = img.split("/").pop() || "";
+            if (ALT_FILES.has(filename)) return `/products/Alt/${filename}`;
+            return `/products/Ust/${filename}`;
+          }),
+        }));
+        setProducts(remapped);
       }
       setLoading(false);
     }
@@ -228,7 +211,7 @@ export default function ShopSection() {
         {/* Row 1: Title + Description — top-aligned */}
         <div className="flex items-start justify-between">
 
-          {/* LEFT — Devasa "Shop" başlığı */}
+          {/* LEFT — Shop heading */}
           <h1
             style={{
               fontFamily: "'Satoshi', 'Inter', 'Helvetica Neue', sans-serif",
@@ -283,27 +266,27 @@ export default function ShopSection() {
       </div>
 
       {/* ═══════════════════════════════════════════════════
-          PRODUCT GRID — 3 cols, minimal gap, premium spacing
+          PRODUCT GRID — 3 cols, standard gaps
       ═══════════════════════════════════════════════════ */}
       {loading ? (
         <div
-          className="grid grid-cols-3 gap-x-[3px] gap-y-14"
-          style={{ padding: "0 48px 100px 48px" }}
+          className="grid grid-cols-3 gap-8"
+          style={{ padding: "0 64px 100px 64px" }}
         >
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="aspect-[3/4.2] bg-[#EEEEEE]" />
-              <div className="flex items-center justify-between mt-5 px-1">
-                <div className="h-2.5 w-24 bg-zinc-200 rounded" />
-                <div className="h-2.5 w-12 bg-zinc-200 rounded" />
+              <div className="aspect-3/4 bg-[#F5F5F5] rounded-xl" />
+              <div className="mt-4 px-1 space-y-2">
+                <div className="h-3 w-28 bg-zinc-200 rounded" />
+                <div className="h-3 w-16 bg-zinc-200 rounded" />
               </div>
             </div>
           ))}
         </div>
       ) : (
         <div
-          className="grid grid-cols-3 gap-x-[3px] gap-y-14"
-          style={{ padding: "0 48px 100px 48px" }}
+          className="grid grid-cols-3 gap-8"
+          style={{ padding: "0 64px 100px 64px" }}
         >
           {filtered.map((product, i) => (
             <motion.div

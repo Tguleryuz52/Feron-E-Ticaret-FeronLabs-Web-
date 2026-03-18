@@ -14,15 +14,15 @@ const EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
 export default function Newsletter() {
   return (
     <motion.section
-      className="relative w-full overflow-hidden"
+      className="relative w-full overflow-hidden bg-black"
       style={{ minHeight: "520px" }}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.25 }}
     >
-      {/* Background — clip-path reveal */}
+      {/* Background — clip-path reveal + black bg underneath */}
       <motion.div
-        className="absolute inset-0"
+        className="absolute inset-0 bg-black"
         variants={{
           hidden: { clipPath: "inset(100% 0 0 0)" },
           visible: {
@@ -32,7 +32,7 @@ export default function Newsletter() {
         }}
       >
         <ParallaxImage
-          src="/brand/footerdan-önce.png"
+          src="/brand/getonnews.jpg"
           alt="Newsletter Background"
           className="w-full h-full"
           intensity={6}
@@ -45,7 +45,7 @@ export default function Newsletter() {
         className="relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between h-full gap-10"
         style={{ padding: "0 80px 80px 80px", minHeight: "520px" }}
       >
-        {/* LEFT — Heading (Sans-Serif, bold, NOT italic) */}
+        {/* LEFT — Heading (Horizontal layout, smaller) */}
         <motion.h2
           variants={{
             hidden: { opacity: 0, y: 40 },
@@ -57,14 +57,16 @@ export default function Newsletter() {
           }}
           className="font-bold text-white"
           style={{
-            fontSize: "clamp(2.5rem, 4.5vw, 5rem)",
-            lineHeight: 1.1,
-            letterSpacing: "-0.03em",
+            fontSize: "clamp(2rem, 3.5vw, 3.5rem)",
+            lineHeight: 1.3,
+            letterSpacing: "-0.02em",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "0.5rem",
           }}
         >
-          Get in on
-          <br />
-          the News
+          <span>Get in on</span>
+          <span>the News</span>
         </motion.h2>
 
         {/* RIGHT — Subscribe form */}

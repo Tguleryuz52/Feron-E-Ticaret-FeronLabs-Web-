@@ -166,6 +166,7 @@ export default function ClientProductDetail({ product, related }: { product: any
                   src={product.images[0]}
                   alt={product.name}
                   className="w-full h-full object-contain p-12"
+                  fetchPriority="high"
                 />
               )}
             </div>

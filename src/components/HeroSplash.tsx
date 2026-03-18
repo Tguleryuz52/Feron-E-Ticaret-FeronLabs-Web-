@@ -9,6 +9,7 @@ import MusicWidget from "./MusicWidget";
 
 const SPLASH_LINKS = [
   { href: "/shop", label: "Shop" },
+  { href: "/feronlabs", label: "FeronLabs" },
   { href: "/shop/categories/new", label: "New Arrivals" },
   { href: "/brand", label: "Brand" },
   { href: "/journal", label: "Journal" },
