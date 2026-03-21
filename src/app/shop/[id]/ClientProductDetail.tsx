@@ -277,7 +277,7 @@ export default function ClientProductDetail({ product, related }: { product: any
           {/* Accordions */}
           <div style={{ marginTop: "32px" }}>
             <Accordion title="Description" defaultOpen>
-              {product.desc}
+              {product.desc ?? product.description ?? ""}
             </Accordion>
             <Accordion title="Returns">
               Free returns within 30 days. Items must be unworn with original tags attached. Refunds processed within 5-7 business days.

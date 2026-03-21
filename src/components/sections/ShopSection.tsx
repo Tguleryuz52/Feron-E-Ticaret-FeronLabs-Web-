@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 import { useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useCartStore } from "@/store/cartStore";
+import { products as localCatalog } from "@/data/products";
 
 /* ─── PRODUCT TYPE ─── */
 type Product = {
@@ -21,6 +20,19 @@ type Product = {
 };
 
 const categories = ["All", "Tops", "Bottoms", "New", "Summer 2026"];
+
+/** Yerel katalog → Shop grid formatı (Supabase yok / boş / hata) */
+function productsFromLocalCatalog(): Product[] {
+  return localCatalog.map((p) => ({
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    images: [p.image],
+    category: { slug: p.category },
+    slug: `product-${p.id}`,
+    is_featured: p.isNew,
+  }));
+}
 
 /* ─── ANIMATION ─── */
 const EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
@@ -38,51 +50,27 @@ const fadeIn = {
   }),
 };
 
-/* ─── PRODUCT CARD COMPONENT ─── */
+/* ─── PRODUCT CARD COMPONENT (Fossil Style - Birebir) ─── */
 function ProductCard({ product }: { product: Product }) {
-  const [hovered, setHovered] = useState(false);
-  const addItem = useCartStore((s) => s.addItem);
-
-  const handleQuickAdd = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addItem({
-      productId: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images?.[0] || "",
-      size: "M",
-    });
-    toast.success(`${product.name} sepete eklendi!`);
-  };
-
   return (
-    <Link
-      href={`/shop/${product.id}`}
-      className="group block"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {/* Image Container */}
-      <div className="relative aspect-3/4 overflow-hidden bg-[#F5F5F5] rounded-xl">
-        {/* NEW badge — clean pill button */}
+    <Link href={`/shop/${product.id}`} className="group block">
+      {/* Image Container — no border radius, tight */}
+      <div className="relative overflow-hidden bg-[#EBEBEB]" style={{ aspectRatio: "3/4" }}>
+
+        {/* NEW badge — top-right, white rounded pill */}
         {product.is_featured && (
           <span
-            className="absolute top-4 left-4 z-10 inline-flex items-center justify-center select-none"
+            className="absolute top-3 right-3 z-10 bg-white text-black select-none"
             style={{
-              backgroundColor: "#000",
-              color: "#fff",
               fontSize: "9px",
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              padding: "6px 14px",
-              borderRadius: "6px",
+              fontWeight: 500,
+              letterSpacing: "0.03em",
+              padding: "5px 11px",
+              borderRadius: "20px",
               lineHeight: 1,
-              whiteSpace: "nowrap",
             }}
           >
-            NEW
+            New
           </span>
         )}
 
@@ -92,66 +80,32 @@ function ProductCard({ product }: { product: Product }) {
           <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
           />
         )}
-
-        {/* Quick Add Button — slides from right at bottom-right */}
-        <AnimatePresence>
-          {hovered && (
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 30 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute bottom-4 right-4 z-20"
-            >
-              <button
-                onClick={handleQuickAdd}
-                className="flex items-center gap-3
-                           bg-black text-white cursor-pointer
-                           hover:bg-zinc-800 active:bg-zinc-900
-                           transition-colors duration-200 select-none shadow-lg"
-                style={{
-                  padding: "10px 18px",
-                  borderRadius: "8px",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "10px",
-                    fontWeight: 700,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Sepete Ekle
-                </span>
-                <span
-                  style={{
-                    fontSize: "15px",
-                    fontWeight: 300,
-                    lineHeight: 1,
-                  }}
-                >
-                  +
-                </span>
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
-      {/* Product Info */}
-      <div className="mt-4 px-1">
+      {/* Product Info — Fossil birebir: isim bold, fiyat normal, küçük üst boşluk */}
+      <div className="mt-3 space-y-0.5">
         <h3
-          className="text-[13px] font-medium text-black truncate"
-          style={{ letterSpacing: "-0.01em" }}
+          className="text-black leading-snug"
+          style={{
+            fontSize: "14px",
+            fontWeight: 600,
+            letterSpacing: "-0.02em",
+          }}
         >
           {product.name}
         </h3>
-        <p className="text-[13px] text-zinc-500 mt-1 font-normal">
-          ${product.price.toFixed(2)}
+        <p
+          className="text-black"
+          style={{
+            fontSize: "14px",
+            fontWeight: 400,
+            letterSpacing: "-0.01em",
+          }}
+        >
+          $ {product.price.toFixed(2)}
         </p>
       </div>
     </Link>
@@ -165,19 +119,12 @@ export default function ShopSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
     async function getProducts() {
-      const supabase = createClient();
-      const { data } = await supabase
-        .from("products")
-        .select(`
-          id, name, price, images, is_featured,
-          category:categories(slug)
-        `);
-      
-      if (data) {
-        /* Remap image paths: old /products/file.png → /products/Ust/ or /products/Alt/ */
-        const ALT_FILES = new Set(["pant.png", "pants2.png", "pants3.png"]);
-        const remapped = (data as unknown as Product[]).map((p) => ({
+      const ALT_FILES = new Set(["pant.png", "pants2.png", "pants3.png"]);
+      const remapImages = (list: Product[]) =>
+        list.map((p) => ({
           ...p,
           images: p.images?.map((img) => {
             if (img.includes("/Ust/") || img.includes("/Alt/")) return img;
@@ -186,19 +133,61 @@ export default function ShopSection() {
             return `/products/Ust/${filename}`;
           }),
         }));
-        setProducts(remapped);
+
+      const useLocal = () => {
+        if (!cancelled) setProducts(remapImages(productsFromLocalCatalog()));
+      };
+
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+      if (!url || !key) {
+        useLocal();
+        if (!cancelled) setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from("products")
+          .select(`
+          id, name, price, images, is_featured,
+          category:categories(slug)
+        `);
+
+        if (cancelled) return;
+
+        if (error) {
+          console.warn("[Shop] Supabase error, using local catalog:", error.message);
+          useLocal();
+        } else if (data && data.length > 0) {
+          setProducts(remapImages(data as unknown as Product[]));
+        } else {
+          useLocal();
+        }
+      } catch (e) {
+        console.warn("[Shop] Supabase unavailable, using local catalog:", e);
+        useLocal();
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
+
     getProducts();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const filtered =
-    activeCategory === "All"
+    activeCategory === "All" || activeCategory === "Summer 2026"
       ? products
       : activeCategory === "New"
-      ? products.filter((p) => p.is_featured)
-      : products.filter((p) => p.category?.slug === activeCategory.toLowerCase());
+        ? products.filter((p) => p.is_featured)
+        : products.filter(
+            (p) => p.category?.slug === activeCategory.toLowerCase()
+          );
 
   return (
     <section className="bg-white text-black min-h-screen">
@@ -206,7 +195,7 @@ export default function ShopSection() {
       {/* ═══════════════════════════════════════════════════
           HERO ZONE — Shop title + Description + Filters
       ═══════════════════════════════════════════════════ */}
-      <div style={{ padding: "120px 64px 0 64px" }}>
+      <div style={{ padding: "120px 48px 0 48px" }}>
 
         {/* Row 1: Title + Description — top-aligned */}
         <div className="flex items-start justify-between">
@@ -266,27 +255,27 @@ export default function ShopSection() {
       </div>
 
       {/* ═══════════════════════════════════════════════════
-          PRODUCT GRID — 3 cols, standard gaps
+          PRODUCT GRID — Fossil birebir: 3 col, gap küçük
       ═══════════════════════════════════════════════════ */}
       {loading ? (
         <div
-          className="grid grid-cols-3 gap-8"
-          style={{ padding: "0 64px 100px 64px" }}
+          className="grid grid-cols-3 gap-x-3 gap-y-10"
+          style={{ padding: "0 48px 100px 48px" }}
         >
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="animate-pulse">
-              <div className="aspect-3/4 bg-[#F5F5F5] rounded-xl" />
-              <div className="mt-4 px-1 space-y-2">
-                <div className="h-3 w-28 bg-zinc-200 rounded" />
-                <div className="h-3 w-16 bg-zinc-200 rounded" />
+              <div className="bg-[#EBEBEB]" style={{ aspectRatio: "3/4" }} />
+              <div className="mt-3 space-y-1.5">
+                <div className="h-3 w-28 bg-zinc-200" />
+                <div className="h-3 w-16 bg-zinc-200" />
               </div>
             </div>
           ))}
         </div>
       ) : (
         <div
-          className="grid grid-cols-3 gap-8"
-          style={{ padding: "0 64px 100px 64px" }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-10"
+          style={{ padding: "0 48px 100px 48px" }}
         >
           {filtered.map((product, i) => (
             <motion.div

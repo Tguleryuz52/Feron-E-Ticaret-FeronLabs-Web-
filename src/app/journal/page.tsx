@@ -1,24 +1,14 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import ShopHeader from "@/components/ShopHeader";
-import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
-import ParallaxImage from "@/components/ParallaxImage";
 
 /* ─── EASING ─── */
 const EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
-
-/* ─── ANIMATION ─── */
-const slideUp = (delay: number) => ({
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, delay, ease: EASE },
-  },
-});
 
 /* ─── JOURNAL DATA ─── */
 interface Article {
@@ -29,26 +19,37 @@ interface Article {
   slug: string;
 }
 
+/* Journal imagery — public/journal (URLs encode spaces) */
+const J = {
+  wallsign: "/journal/wallsign%20copy.jpg",
+  textile: "/journal/Textile%20Mockup%20copy.jpg",
+  copy33: "/journal/33%20copy.jpg",
+  green: "/journal/Green%20Branding%20Mockup%202%20copy.png",
+  stickers: "/journal/ENV_Stickers_01_PSD_LH_Batch_51%20copy.png",
+  img8021: "/journal/8021%20copy.jpg",
+  janko: "/journal/janko-ferlic-eBtwD6ZG78I-unsplash.jpg",
+} as const;
+
 const FEATURED: Article[] = [
   {
     id: "1",
     title: "Crafting Performance Wear",
     date: "04.01.2025",
-    image: "/brand/brand.png",
+    image: J.wallsign,
     slug: "crafting-performance-wear",
   },
   {
     id: "2",
     title: "Timeless Comfort: The Feron Way",
     date: "05.04.2025",
-    image: "/brand/brand-2.png",
+    image: J.textile,
     slug: "timeless-comfort",
   },
   {
     id: "3",
     title: "The Value of Quality: Investing in Timeless Fashion",
     date: "06.12.2025",
-    image: "/brand/brand-3.png",
+    image: J.copy33,
     slug: "the-value-of-quality",
   },
 ];
@@ -58,27 +59,34 @@ const ARTICLES: Article[] = [
     id: "4",
     title: "Sustainable Style: Feron's Commitment to Sustainability",
     date: "03.04.2025",
-    image: "/brand/brand-4.png",
+    image: J.green,
     slug: "sustainable-style",
   },
   {
     id: "5",
     title: "Fashion in Motion",
     date: "03.12.2025",
-    image: "/brand/brand-5.png",
+    image: J.janko,
     slug: "fashion-in-motion",
   },
   {
     id: "6",
     title: "Style that Keeps Up with Your Active Life",
     date: "04.22.2025",
-    image: "/brand/brand-6.png",
+    image: J.img8021,
     slug: "style-that-keeps-up",
+  },
+  {
+    id: "7",
+    title: "Brand Details: Labels & Finishes",
+    date: "05.08.2025",
+    image: J.stickers,
+    slug: "brand-details-labels",
   },
 ];
 
 /* ─── ARROW ICON ─── */
-function ArrowIcon() {
+const ArrowIcon = memo(function ArrowIcon() {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -86,6 +94,7 @@ function ArrowIcon() {
       stroke="currentColor"
       strokeWidth="1.5"
       className="w-4 h-4 shrink-0"
+      aria-hidden
     >
       <path
         strokeLinecap="round"
@@ -94,49 +103,50 @@ function ArrowIcon() {
       />
     </svg>
   );
-}
+});
 
-/* ─── ARTICLE CARD — Premium Hover ─── */
-function ArticleCard({
+/* ─── OPTIMIZED CARD — next/image + CSS hover (no parallax / no nested motion) ─── */
+const ArticleCard = memo(function ArticleCard({
   article,
-  index,
   large = false,
+  priority = false,
 }: {
   article: Article;
-  index: number;
   large?: boolean;
+  priority?: boolean;
 }) {
-  return (
-    <motion.article
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-60px" }}
-    >
-      <Link href={`/journal/${article.slug}`} className="group block">
-        {/* Image — Overflow hidden container + soft hover zoom */}
-        <motion.div variants={slideUp(index * 0.08)}>
-          <div className="aspect-[4/3] overflow-hidden rounded-sm">
-            <motion.div
-              className="w-full h-full"
-              whileHover={{ scale: 1.08 }}
-              transition={{ duration: 0.8, ease: EASE }}
-            >
-              <ParallaxImage
-                src={article.image}
-                alt={article.title}
-                className="w-full h-full"
-                intensity={8}
-              />
-            </motion.div>
-          </div>
-        </motion.div>
+  const sizes = useMemo(
+    () =>
+      large
+        ? "(max-width: 768px) 100vw, 50vw"
+        : "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw",
+    [large]
+  );
 
-        {/* Footer — Title+Date left, Arrow right */}
-        <motion.div
-          variants={slideUp(0.15 + index * 0.08)}
-          className="flex justify-between items-start mt-4"
+  return (
+    <article className="group block [content-visibility:auto]">
+      <Link href={`/journal/${article.slug}`} className="block">
+        <div
+          className={`relative overflow-hidden rounded-sm bg-zinc-100 ${
+            large ? "aspect-[16/10] min-h-[280px] md:min-h-[320px]" : "aspect-[4/3]"
+          }`}
         >
-          {/* Left: Title + Date */}
+          {/* GPU-friendly hover: transform on wrapper, not motion */}
+          <div className="absolute inset-0 origin-center transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.05]">
+            <Image
+              src={article.image}
+              alt={article.title}
+              fill
+              sizes={sizes}
+              className="object-cover"
+              priority={priority}
+              loading={priority ? "eager" : "lazy"}
+              decoding="async"
+            />
+          </div>
+        </div>
+
+        <div className="mt-4 flex justify-between items-start">
           <div className="min-w-0 pr-4">
             <h3
               className="relative inline text-black font-bold"
@@ -147,29 +157,26 @@ function ArticleCard({
               }}
             >
               {article.title}
-              {/* Animated underline — scales from left on hover */}
               <span
-                className="absolute left-0 -bottom-[3px] h-[2px] bg-black origin-left transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] scale-x-0 group-hover:scale-x-100"
-                style={{ width: "100%" }}
+                className="absolute left-0 -bottom-[3px] h-[2px] w-full origin-left scale-x-0 bg-black transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-x-100"
+                aria-hidden
               />
             </h3>
             <p
-              className="text-zinc-500 mt-2"
+              className="mt-2 text-zinc-500"
               style={{ fontSize: "12px", fontWeight: 500 }}
             >
               {article.date}
             </p>
           </div>
-
-          {/* Right: Arrow → shifts right on hover */}
-          <span className="text-black mt-0.5 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-x-3">
+          <span className="mt-0.5 text-black transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-x-3">
             <ArrowIcon />
           </span>
-        </motion.div>
+        </div>
       </Link>
-    </motion.article>
+    </article>
   );
-}
+});
 
 /* ─── PAGE ─── */
 export default function JournalPage() {
@@ -177,14 +184,11 @@ export default function JournalPage() {
     <main className="bg-white text-black min-h-screen">
       <ShopHeader />
 
-      {/* ═══════════════════════════════════════════════
-          HERO — "Journal" (Sans-Serif, font-black, NO italic)
-      ═══════════════════════════════════════════════ */}
       <section style={{ padding: "100px 64px 0 64px" }}>
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: EASE }}
+          transition={{ duration: 0.6, ease: EASE }}
           className="font-black tracking-tighter leading-none text-black"
           style={{
             fontSize: "clamp(6rem, 10vw, 10rem)",
@@ -194,15 +198,8 @@ export default function JournalPage() {
         </motion.h1>
       </section>
 
-      {/* ═══════════════════════════════════════════════
-          (Featured) + 4-col Asymmetric Grid (2+1+1)
-      ═══════════════════════════════════════════════ */}
       <section style={{ padding: "48px 64px 0 64px" }}>
-        {/* (Featured) label */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
+        <p
           className="text-black"
           style={{
             fontSize: "15px",
@@ -211,41 +208,29 @@ export default function JournalPage() {
           }}
         >
           (Featured)
-        </motion.p>
+        </p>
 
-        {/* 4-col grid: first card spans 2, others span 1 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* LARGE CARD — col-span-2 */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <div className="md:col-span-2">
-            <ArticleCard article={FEATURED[0]} index={0} large />
+            <ArticleCard article={FEATURED[0]} large priority />
           </div>
-
-          {/* SMALL CARD 2 */}
           <div className="md:col-span-1">
-            <ArticleCard article={FEATURED[1]} index={1} />
+            <ArticleCard article={FEATURED[1]} />
           </div>
-
-          {/* SMALL CARD 3 */}
           <div className="md:col-span-1">
-            <ArticleCard article={FEATURED[2]} index={2} />
+            <ArticleCard article={FEATURED[2]} />
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════
-          ALL ARTICLES — Equal 3-column grid
-      ═══════════════════════════════════════════════ */}
       <section style={{ padding: "80px 64px 100px 64px" }}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {ARTICLES.map((article, i) => (
-            <ArticleCard key={article.id} article={article} index={i} />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {ARTICLES.map((article) => (
+            <ArticleCard key={article.id} article={article} />
           ))}
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════
-          NEWSLETTER + FOOTER
-      ═══════════════════════════════════════════════ */}
       <Footer />
     </main>
   );

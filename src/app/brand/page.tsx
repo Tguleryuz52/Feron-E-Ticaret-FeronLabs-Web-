@@ -314,7 +314,7 @@ export default function BrandPage() {
             viewport={{ once: true, margin: "-80px" }}
             className="text-center font-bold tracking-tight text-white"
             style={{
-              fontSize: "clamp(3rem, 8vw, 7rem)",
+              fontSize: "clamp(2.25rem, 6vw, 5.25rem)",
               lineHeight: 1.1,
               textShadow: "0 4px 30px rgba(0,0,0,0.5)",
               fontWeight: 700,
