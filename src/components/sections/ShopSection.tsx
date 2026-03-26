@@ -27,7 +27,7 @@ function productsFromLocalCatalog(): Product[] {
     id: p.id,
     name: p.name,
     price: p.price,
-    images: [p.image],
+    images: p.images && p.images.length > 0 ? p.images : [p.image],
     category: { slug: p.category },
     slug: `product-${p.id}`,
     is_featured: p.isNew,
@@ -52,6 +52,8 @@ const fadeIn = {
 
 /* ─── PRODUCT CARD COMPONENT (Fossil Style - Birebir) ─── */
 function ProductCard({ product }: { product: Product }) {
+  const hasMultipleImages = product.images && product.images.length > 1;
+
   return (
     <Link href={`/shop/${product.id}`} className="group block">
       {/* Image Container — no border radius, tight */}
@@ -80,7 +82,15 @@ function ProductCard({ product }: { product: Product }) {
           <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] ${hasMultipleImages ? "group-hover:opacity-0" : ""}`}
+          />
+        )}
+        {hasMultipleImages && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.images[1]}
+            alt={`${product.name} hover`}
+            className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out opacity-0 scale-[1.03] group-hover:opacity-100 group-hover:scale-100"
           />
         )}
       </div>

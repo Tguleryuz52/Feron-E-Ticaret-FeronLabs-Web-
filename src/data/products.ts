@@ -4,6 +4,7 @@ export interface Product {
   name: string;
   price: number;
   image: string;
+  images?: string[];
   category: "tops" | "bottoms";
   isNew: boolean;
   description: string;
@@ -55,6 +56,10 @@ export const products: Product[] = [
     name: "Polo Beyaz Classic",
     price: 129,
     image: "/products/Ust/Lacoste-Polo-Beyaz-copy.png",
+    images: [
+      "/products/Ust/Lacoste-Polo-Beyaz-copy.png",
+      "/products/Ust/Lacoste Polo Beyaz2.jpg"
+    ],
     category: "tops",
     isNew: true,
     description: "Timeless white polo in ultra-fine piqué cotton. The classic two-button placket and mother-of-pearl buttons elevate this essential. A refined collar sits perfectly with or without a blazer.",
@@ -67,6 +72,11 @@ export const products: Product[] = [
     name: "Polo Bold Green",
     price: 129,
     image: "/products/Ust/Lacoste-Polo-Bold-green1-copy.png",
+    images: [
+      "/products/Ust/Lacoste-Polo-Bold-green1-copy.png",
+      "/products/Ust/Lacoste Polo Bold green 4.jpg",
+      "/products/Ust/Lacoste Polo Bold green 2.jpg"
+    ],
     category: "tops",
     isNew: false,
     description: "A bold green polo that commands attention. Crafted from premium long-staple cotton for exceptional softness and color retention. Features a ribbed collar and two-button placket.",
@@ -79,6 +89,11 @@ export const products: Product[] = [
     name: "Polo Bordo Classic",
     price: 129,
     image: "/products/Ust/Lacoste-Polo-Bordo-1-copy.png",
+    images: [
+      "/products/Ust/Lacoste-Polo-Bordo-1-copy.png",
+      "/products/Ust/Lacoste Polo Bordo 4.jpg",
+      "/products/Ust/Lacoste Polo Bordo 2.jpg"
+    ],
     category: "tops",
     isNew: false,
     description: "Rich bordeaux polo in signature piqué weave. The deep, saturated color pairs beautifully with neutral tones. Features classic mother-of-pearl buttons and a self-finished hem.",
@@ -91,6 +106,11 @@ export const products: Product[] = [
     name: "Polo White Blue",
     price: 129,
     image: "/products/Ust/Lacoste-Polo-White-Blue-1-copy.png",
+    images: [
+      "/products/Ust/Lacoste-Polo-White-Blue-1-copy.png",
+      "/products/Ust/Lacoste Polo White Blue 4.jpg",
+      "/products/Ust/Lacoste Polo White Blue 2.jpg"
+    ],
     category: "tops",
     isNew: false,
     description: "A fresh white and blue polo with contrast detailing. Made from breathable cotton piqué, ideal for warmer days. The subtle color blocking adds a contemporary edge.",
@@ -103,6 +123,11 @@ export const products: Product[] = [
     name: "Polo White Green",
     price: 129,
     image: "/products/Ust/Lacoste-Polo-White-Green-1-copy.png",
+    images: [
+      "/products/Ust/Lacoste-Polo-White-Green-1-copy.png",
+      "/products/Ust/Lacoste Polo White Green 4.jpg",
+      "/products/Ust/Lacoste Polo White Green 2.jpg"
+    ],
     category: "tops",
     isNew: true,
     description: "Crisp white polo with vibrant green accents. Premium piqué cotton ensures breathability and comfort. A modern interpretation of a timeless classic.",
@@ -115,6 +140,11 @@ export const products: Product[] = [
     name: "Polo Indigo Classic",
     price: 129,
     image: "/products/Ust/Lacoste-Polo-İndigo-1-copy.png",
+    images: [
+      "/products/Ust/Lacoste-Polo-İndigo-1-copy.png",
+      "/products/Ust/Lacoste Polo İndigo 4.jpg",
+      "/products/Ust/Lacoste Polo İndigo 2.jpg"
+    ],
     category: "tops",
     isNew: false,
     description: "Deep indigo polo with a sophisticated feel. The rich color is achieved through a special dyeing process for lasting vibrancy. Features a structured collar and pearl buttons.",
@@ -122,6 +152,23 @@ export const products: Product[] = [
     sizeAndFit: "Slim fit. Model wears size M and is 183cm / 6'0\". Chest: S 96cm, M 102cm, L 108cm, XL 114cm.",
     returns: "Free returns within 30 days. Items must be unworn with original tags attached. Refunds processed within 5-7 business days.",
   },
+  {
+    id: 13,
+    name: "Lacoste Polo Kiremit",
+    price: 129,
+    image: "/products/Ust/Lacoste Polo kiremit 1.jpg",
+    images: [
+      "/products/Ust/Lacoste Polo kiremit 1.jpg",
+      "/products/Ust/Lacoste Polo kiremit 4.jpg",
+      "/products/Ust/Lacoste Polo kiremit 2.jpg"
+    ],
+    category: "tops",
+    isNew: true,
+    description: "A rich brick-red (kiremit) polo crafted from premium piqué cotton. Stand out with this vibrant yet earthy tone. Complete with classic Lacoste detailing and a timeless fit.",
+    sizes: ["S", "M", "L", "XL"],
+    sizeAndFit: "Regular fit. Model wears size M and is 183cm / 6'0\". Chest: S 98cm, M 104cm, L 110cm, XL 116cm.",
+    returns: "Free returns within 30 days. Items must be unworn with original tags attached. Refunds processed within 5-7 business days."
+  }
 ];
 
 export function getProduct(id: number): Product | undefined {
