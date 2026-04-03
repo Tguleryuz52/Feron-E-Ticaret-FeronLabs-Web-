@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -50,8 +51,17 @@ const fadeIn = {
   }),
 };
 
+const SHOP_CARD_SIZES =
+  "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw";
+
 /* ─── PRODUCT CARD COMPONENT (Fossil Style - Birebir) ─── */
-function ProductCard({ product }: { product: Product }) {
+function ProductCard({
+  product,
+  priority = false,
+}: {
+  product: Product;
+  priority?: boolean;
+}) {
   const hasMultipleImages = product.images && product.images.length > 1;
 
   return (
@@ -76,21 +86,27 @@ function ProductCard({ product }: { product: Product }) {
           </span>
         )}
 
-        {/* Product Image */}
+        {/* Product Image — next/image: doğru sizes + kalite (85) */}
         {product.images?.[0] && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={product.images[0]}
             alt={product.name}
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] ${hasMultipleImages ? "group-hover:opacity-0" : ""}`}
+            fill
+            sizes={SHOP_CARD_SIZES}
+            quality={85}
+            priority={priority}
+            className={`object-cover transition-all duration-700 ease-out group-hover:scale-[1.03] ${hasMultipleImages ? "group-hover:opacity-0" : ""}`}
           />
         )}
         {hasMultipleImages && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={product.images[1]}
             alt={`${product.name} hover`}
-            className="absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out opacity-0 scale-[1.03] group-hover:opacity-100 group-hover:scale-100"
+            fill
+            sizes={SHOP_CARD_SIZES}
+            quality={85}
+            loading="lazy"
+            className="object-cover transition-all duration-700 ease-out opacity-0 scale-[1.03] group-hover:opacity-100 group-hover:scale-100"
           />
         )}
       </div>
@@ -296,7 +312,7 @@ export default function ShopSection() {
               whileInView="visible"
               viewport={{ once: true, margin: "-40px" }}
             >
-              <ProductCard product={product} />
+              <ProductCard product={product} priority={i < 6} />
             </motion.div>
           ))}
         </div>

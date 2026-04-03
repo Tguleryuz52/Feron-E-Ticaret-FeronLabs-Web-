@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -10,6 +11,13 @@ import { useCartStore } from "@/store/cartStore";
 
 /* ─── EASING ─── */
 const EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
+
+/** Ürün detay sol sütun görselleri (~yarım genişlik) */
+const DETAIL_IMAGE_SIZES =
+  "(max-width: 1536px) 42vw, 520px";
+/** İlgili ürün grid (3 sütun) */
+const RELATED_IMAGE_SIZES =
+  "(max-width: 768px) 100vw, 33vw";
 
 /* ─── ACCORDION ITEM ─── */
 function Accordion({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
@@ -69,12 +77,15 @@ function RelatedCard({ product }: { product: any }) {
   return (
     <Link href={`/shop/${product.id}`} className="group block">
       <div className="relative aspect-3/4 overflow-hidden rounded-sm bg-[#F4F4F5]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         {product.images?.[0] && (
-          <img
+          <Image
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-contain p-10 transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.06]"
+            fill
+            sizes={RELATED_IMAGE_SIZES}
+            quality={85}
+            loading="lazy"
+            className="object-contain p-10 transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:scale-[1.06]"
           />
         )}
       </div>
@@ -160,13 +171,15 @@ export default function ClientProductDetail({ product, related }: { product: any
             transition={{ duration: 0.8, ease: EASE }}
           >
             <div className="relative aspect-3/4 w-full">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               {product.images?.[0] && (
-                <img
+                <Image
                   src={product.images[0]}
                   alt={product.name}
-                  className="w-full h-full object-contain p-12"
-                  fetchPriority="high"
+                  fill
+                  sizes={DETAIL_IMAGE_SIZES}
+                  quality={85}
+                  priority
+                  className="object-contain p-12"
                 />
               )}
             </div>
@@ -180,12 +193,15 @@ export default function ClientProductDetail({ product, related }: { product: any
             transition={{ duration: 0.8, delay: 0.1, ease: EASE }}
           >
             <div className="relative aspect-3/4 w-full">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               {product.images?.[0] && (
-                <img
+                <Image
                   src={product.images[0]}
                   alt={`${product.name} detail`}
-                  className="w-full h-full object-cover scale-[2.5] translate-y-[10%]"
+                  fill
+                  sizes={DETAIL_IMAGE_SIZES}
+                  quality={85}
+                  loading="lazy"
+                  className="object-cover scale-[2.5] translate-y-[10%]"
                 />
               )}
             </div>
